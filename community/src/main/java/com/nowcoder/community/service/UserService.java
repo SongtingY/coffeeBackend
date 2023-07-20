@@ -6,7 +6,7 @@ import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.MailClient;
-import io.micrometer.common.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -197,6 +197,30 @@ public class UserService {
         userMapper.updatePassword(user.getId(), password);
 
         map.put("user", user);
+        return map;
+    }
+
+//    验证邮箱是否存在，存在即发送邮件
+    public Map<String, Object> verifyEmail(String email){
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isBlank(email)) {
+//            因为在reset那里需要进行判断，所以这里不需要return 文字
+            return map;
+        }
+        User user = userMapper.selectByEmail(email);
+
+        if(user == null){
+            return map;
+        }else{
+            Context context = new Context();
+            context.setVariable("email", email);
+            String code = CommunityUtil.generateUUID().substring(0,4);
+            context.setVariable("verifyCode", code);
+            String content = templateEngine.process("/mail/forget", context);
+            mailClient.sendMail(email, "找回密码", content);
+            map.put("code",code);
+        }
+        map.put("user",user);
         return map;
     }
 }
