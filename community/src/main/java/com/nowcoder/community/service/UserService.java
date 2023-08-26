@@ -174,6 +174,10 @@ public class UserService {
         return userMapper.updatePassword(userId, password);
     }
 
+    public User findUserByName(String name){
+        return userMapper.selectByName(name);
+    }
+
     public Map<String, Object> resetPassword(String email, String password) {
         Map<String, Object> map = new HashMap<>();
 
@@ -223,4 +227,6 @@ public class UserService {
         map.put("user",user);
         return map;
     }
+
+
 }
