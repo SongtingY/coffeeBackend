@@ -6,6 +6,7 @@ import com.nowcoder.community.entity.LoginTicket;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.MailClient;
+import com.nowcoder.community.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -153,6 +154,8 @@ public class UserService {
         loginTicket.setStatus(0);
         loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
         loginTicketMapper.insertLoginTicket(loginTicket);
+
+//        String redisKey = RedisKeyUtil.getTicketKey(loginTicket);
 
         map.put("ticket", loginTicket.getTicket());
         return map;
