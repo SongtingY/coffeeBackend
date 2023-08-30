@@ -22,7 +22,7 @@ public class LikeService {
                 String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
                 String userLikeKey = RedisKeyUtil.getUserLikeKey(entityUserId);
 
-                boolean isMember = redisTemplate.opsForSet().isMember(entityLikeKey, userId);
+                boolean isMember = operations.opsForSet().isMember(entityLikeKey, userId);
 
 //                事务
                 operations.multi();

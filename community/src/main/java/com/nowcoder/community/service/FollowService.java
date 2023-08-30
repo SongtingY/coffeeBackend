@@ -20,7 +20,7 @@ public class FollowService implements CommunityConstant {
     @Autowired
     private UserService userService;
 
-    public void follow(int userId, int entityType, int entityId){
+    public void follow(int userId, int entityType, int entityId) {
         redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations operations) throws DataAccessException {
@@ -32,12 +32,10 @@ public class FollowService implements CommunityConstant {
                 operations.opsForZSet().add(followeeKey, entityId, System.currentTimeMillis());
                 operations.opsForZSet().add(followerKey, userId, System.currentTimeMillis());
 
-
-
                 return operations.exec();
             }
         });
-    };
+    }
 
     public void unfollow(int userId, int entityType, int entityId){
         redisTemplate.execute(new SessionCallback() {
@@ -50,8 +48,6 @@ public class FollowService implements CommunityConstant {
 
                 operations.opsForZSet().remove(followeeKey, entityId);
                 operations.opsForZSet().remove(followerKey, userId);
-
-
 
                 return operations.exec();
             }

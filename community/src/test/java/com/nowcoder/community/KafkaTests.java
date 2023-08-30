@@ -48,7 +48,6 @@ class KafkaProducer{
     }
 }
 
-
 @Component
 class KafkaConsumer {
 
