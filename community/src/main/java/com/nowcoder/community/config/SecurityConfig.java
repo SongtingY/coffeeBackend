@@ -78,8 +78,7 @@ public class SecurityConfig implements CommunityConstant {
                                 )
                                 .requestMatchers(
                                         "/discuss/delete",
-                                        "/data/**",
-                                        "/actuator/**"
+                                        "/data/**"
                                 )
                                 .hasAnyAuthority(
                                         AUTHORITY_ADMIN
