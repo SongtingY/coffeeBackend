@@ -76,7 +76,7 @@ public class DataService {
         }
 
         // 进行OR运算
-        long execute = (long) redisTemplate.execute(new RedisCallback() {
+        return (long) redisTemplate.execute(new RedisCallback() {
             @Override
             public Object doInRedis(RedisConnection connection) throws DataAccessException {
                 String redisKey = RedisKeyUtil.getDAUKey(df.format(start), df.format(end));
@@ -85,7 +85,6 @@ public class DataService {
                 return connection.stringCommands().bitCount(redisKey.getBytes());
             }
         });
-        return execute;
 
     }
 
