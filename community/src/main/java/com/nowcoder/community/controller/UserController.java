@@ -230,4 +230,34 @@ public class UserController implements CommunityConstant {
 
         return "/site/my-reply";
     }
+
+    @RequestMapping(path = "/mypost/{userId}", method = RequestMethod.GET)
+    public String getPostPage(@PathVariable("userId") int userId, Model model, Page page){
+        User user = userService.findUserById(userId);
+        if(user == null){
+            throw new RuntimeException("用户不存在");
+        }
+//        用户
+        model.addAttribute("user", user);
+
+//        分页
+        page.setRows(discussPostService.findDiscussPostRows(userId));
+        page.setPath("/user/mypost/" + userId);
+
+//       回复列表
+        List<DiscussPost> postList = discussPostService.findDiscussPosts(userId, page.getOffset(), page.getLimit(), 0);
+        List<Map<String, Object>> postVoList = new ArrayList<>();
+        if( postList != null){
+            for(DiscussPost post: postList){
+                Map<String, Object> map = new HashMap<>();
+                map.put("post", post);
+                long like = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                map.put("like", like);
+                postVoList.add(map);
+            }
+        }
+        model.addAttribute("postVoList", postVoList);
+
+        return "/site/my-post";
+    }
 }
