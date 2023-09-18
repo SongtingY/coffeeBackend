@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -63,5 +64,9 @@ public class MessageService {
 
     public List<Message> findNotices(int userId, String topic, int offset, int limit){
         return messageMapper.selectNotices(userId, topic, offset, limit);
+    }
+
+    public int deleteMessage(int id){
+        return messageMapper.updateStatus(Arrays.asList(new Integer[]{id}), 2);
     }
 }
