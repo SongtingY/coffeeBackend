@@ -3,7 +3,7 @@ package com.nowcoder.community.quartz;
 import com.nowcoder.community.controller.DiscussPostController;
 import com.nowcoder.community.entity.DiscussPost;
 import com.nowcoder.community.service.DiscussPostService;
-//import com.nowcoder.community.service.ElasticsearchService;
+import com.nowcoder.community.service.ElasticSearchService;
 import com.nowcoder.community.service.LikeService;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.RedisKeyUtil;
@@ -22,15 +22,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * ClassName: PostScoreRefreshJob
- * Package: com.nowcoder.community.quartz
- * Description:
- *
- * @Autuor Dongjie Sang
- * @Create 2023/6/12 18:50
- * @Version 1.0
- */
+
 @Component
 public class PostScoreRefreshJob implements Job, CommunityConstant {
 
@@ -45,8 +37,8 @@ public class PostScoreRefreshJob implements Job, CommunityConstant {
     @Autowired
     private LikeService likeService;
 
-//    @Autowired
-//    private ElasticsearchService elasticsearchService;
+    @Autowired
+    private ElasticSearchService elasticsearchService;
 
     // 牛客纪元
     private static final Date epoch;
@@ -101,6 +93,6 @@ public class PostScoreRefreshJob implements Job, CommunityConstant {
         discussPostService.updateScores(postId, score);
         // 同步搜索数据
         post.setScore(score);
-//        elasticsearchService.saveDiscussPost(post);
+        elasticsearchService.saveDiscussPost(post);
     }
 }

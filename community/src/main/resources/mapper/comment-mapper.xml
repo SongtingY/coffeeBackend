@@ -41,4 +41,11 @@
         where id = #{id}
     </select>
 
+    <select id="selectCommentByUser">
+        select <include refid="selectFields"></include>
+        from comment
+        where user_id = #{userId}
+        and status != 1
+    </select>
+
 </mapper>
