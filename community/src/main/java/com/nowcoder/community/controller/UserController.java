@@ -1,10 +1,11 @@
 package com.nowcoder.community.controller;
 
 import com.nowcoder.community.annotation.LoginRequired;
+import com.nowcoder.community.entity.Comment;
+import com.nowcoder.community.entity.DiscussPost;
+import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
-import com.nowcoder.community.service.FollowService;
-import com.nowcoder.community.service.LikeService;
-import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.service.*;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
@@ -28,6 +29,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -66,6 +71,12 @@ public class UserController implements CommunityConstant {
 
     @Autowired
     private FollowService followService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private DiscussPostService discussPostService;
 
     @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
@@ -186,5 +197,37 @@ public class UserController implements CommunityConstant {
         model.addAttribute("hasFollowed",hasFollowed);
 
         return "/site/profile";
+    }
+
+    @RequestMapping(path = "/myreply/{userId}", method = RequestMethod.GET)
+    public String getReplyPage(@PathVariable("userId") int userId, Model model, Page page){
+        User user = userService.findUserById(userId);
+        if(user == null){
+            throw new RuntimeException("用户不存在");
+        }
+//        用户
+        model.addAttribute("user", user);
+
+//        分页
+        page.setRows(commentService.findUserCommentsCount(userId));
+        page.setPath("/user/myreply/" + userId);
+
+//       回复列表
+        List<Comment> commentList = commentService.findUserComments(userId, page.getOffset(), page.getLimit());
+        List<Map<String, Object>> commentVoList = new ArrayList<>();
+        if( commentList != null){
+            for(Comment comment: commentList){
+                Map<String, Object> map = new HashMap<>();
+                map.put("comment", comment);
+//                因为我们需要从我们的回复中点击进入原帖子，所以我们需要去存入post
+                DiscussPost post = discussPostService.findDiscussPostById(comment.getEntityId());
+                map.put("post", post);
+
+                commentVoList.add(map);
+            }
+        }
+        model.addAttribute("commentVoList", commentVoList);
+
+        return "/site/my-reply";
     }
 }
