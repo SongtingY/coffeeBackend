@@ -21,4 +21,3 @@ A forum project with complete basic functions. The main features of the project 
 - Spring Security, Quartz, Caffeine
 
   
-<img width="987" alt="Screenshot 2023-09-19 at 5 42 35 PM" src="https://github.com/SongtingY/nowcoderBackend/assets/94235734/1ca547f0-37c1-4512-a0fe-616d46d22ca8">
